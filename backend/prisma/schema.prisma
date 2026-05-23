@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  password  String
+  role      Role       @default(OWNER)
+  createdAt DateTime   @default(now())
+  cafeteria Cafeteria?
+}
+
+model Cafeteria {
+  id               String      @id @default(uuid())
+  name             String
+  slug             String      @unique
+  logo             String?
+  description      String?
+  address          String?
+  phone            String?
+  userId           String      @unique
+  user             User        @relation(fields: [userId], references: [id])
+  status           Status      @default(TRIAL)
+  stripeCustomerId String?
+  stripeSubId      String?
+  createdAt        DateTime    @default(now())
+  inventory        Inventory[]
+}
+
+model Inventory {
+  id          String    @id @default(uuid())
+  name        String
+  quantity    Float
+  unit        String
+  category    String
+  method      String?
+  cafeteriaId String
+  cafeteria   Cafeteria @relation(fields: [cafeteriaId], references: [id])
+  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime  @default(now())
+}
+
+enum Role {
+  OWNER
+  ADMIN
+}
+
+enum Status {
+  TRIAL
+  ACTIVE
+  SUSPENDED
+}
