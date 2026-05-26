@@ -1,8 +1,7 @@
-const Stripe         = require('stripe')
-const { PrismaClient } = require('@prisma/client')
+const Stripe = require('stripe')
+const prisma = require('../db') // Importamos tu conexión central
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-const prisma = new PrismaClient()
 
 // POST /api/payment/create-checkout
 // Crea una sesión de pago y redirige al checkout de Stripe

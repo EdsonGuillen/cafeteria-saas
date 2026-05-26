@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
+const prisma = require('../db')
 
 const getCafeteriaId = async (userId) => {
   const cafeteria = await prisma.cafeteria.findUnique({ where: { userId } })

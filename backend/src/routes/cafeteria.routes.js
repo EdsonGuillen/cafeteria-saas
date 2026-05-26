@@ -2,7 +2,7 @@ const router = require('express').Router()
 const { PrismaClient } = require('@prisma/client')
 const auth   = require('../middleware/auth.middleware')
 const ctrl   = require('../controllers/cafeteria.controller')
-const prisma = new PrismaClient()
+const prisma = require('../db');
 
 // Rutas privadas
 router.get('/me',  auth, ctrl.getMe)

@@ -1,8 +1,7 @@
-const { PrismaClient } = require('@prisma/client')
+// src/controllers/auth.controller.js
+const prisma = require('../db') // Importamos la conexión central
 const bcrypt  = require('bcryptjs')
 const jwt     = require('jsonwebtoken')
-
-const prisma  = new PrismaClient()
 
 const signToken = (user) =>
   jwt.sign(
