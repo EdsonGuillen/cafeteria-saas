@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import api from '@/lib/api'
 
@@ -12,7 +12,7 @@ const STATUS_COLOR = { TRIAL: 'text-amber-500', ACTIVE: 'text-green-600', SUSPEN
 const STATUS_LABEL = { TRIAL: 'Prueba gratuita', ACTIVE: 'Activa ✓', SUSPENDED: 'Suspendida' }
 const emptyForm    = { name: '', quantity: '', unit: 'g', category: 'café', method: '' }
 
-export default function DashboardPage() {
+function DashboardContent() {
   const router       = useRouter()
   const searchParams = useSearchParams()
   const pagoStatus   = searchParams.get('pago')
@@ -389,5 +389,13 @@ export default function DashboardPage() {
 
       </div>
     </main>
+  )
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <DashboardContent />
+    </Suspense>
   )
 }

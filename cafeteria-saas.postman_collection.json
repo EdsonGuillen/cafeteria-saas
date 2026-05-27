@@ -1,0 +1,374 @@
+{
+  "info": {
+    "name": "Cafeteria SaaS API",
+    "description": "API REST para gestión de cafeterías - Autenticación, Inventario, Cafeterías y Pagos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://cafeteria-saasv2-backend.onrender.com",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@cafeteria.com\",\n  \"password\": \"SecurePass123!\",\n  \"cafeteriaName\": \"Café con C\",\n  \"slug\": \"cafe-con-c\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Registra un nuevo propietario de cafetería. Crea automáticamente el usuario y su cafetería asociada."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Save token\", function() {",
+                  "  const res = pm.response.json();",
+                  "  if (res.token) pm.environment.set(\"token\", res.token);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@cafeteria.com\",\n  \"password\": \"SecurePass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Inicia sesión con email y contraseña. Retorna JWT token válido por 7 días."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Save token\", function() {",
+                  "  const res = pm.response.json();",
+                  "  if (res.token) pm.environment.set(\"token\", res.token);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Obtiene los datos del usuario autenticado actual. Requiere token JWT válido."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cafeteria",
+      "item": [
+        {
+          "name": "Get My Cafeteria",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/cafeteria/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cafeteria", "me"]
+            },
+            "description": "Obtiene los datos de la cafetería del usuario autenticado. Requiere token JWT."
+          },
+          "response": []
+        },
+        {
+          "name": "Update My Cafeteria",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Café con C - Nueva Ubicación\",\n  \"description\": \"La mejor cafetería del barrio con nueva ubicación\",\n  \"phone\": \"+34 666 777 888\",\n  \"address\": \"Calle Principal 123, Madrid\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/cafeteria/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cafeteria", "me"]
+            },
+            "description": "Actualiza los datos de la cafetería del usuario. Campos: name, description, phone, address."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Public Cafeteria",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/cafeteria/cafe-con-c",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cafeteria", "cafe-con-c"]
+            },
+            "description": "Obtiene la cafetería pública por slug. Solo retorna cafeterías con status ACTIVE. No requiere autenticación."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Inventory",
+      "item": [
+        {
+          "name": "Get All Inventory",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory",
+              "host": ["{{base_url}}"],
+              "path": ["api", "inventory"]
+            },
+            "description": "Obtiene todos los productos de inventario de la cafetería del usuario autenticado."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Café Espresso Premium\",\n  \"quantity\": 50,\n  \"unit\": \"kg\",\n  \"category\": \"café\",\n  \"method\": \"espresso\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/inventory",
+              "host": ["{{base_url}}"],
+              "path": ["api", "inventory"]
+            },
+            "description": "Crea un nuevo producto en el inventario. Campos requeridos: name, quantity, unit, category. method es opcional."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Café Arabica Premium\",\n  \"quantity\": 100,\n  \"unit\": \"kg\",\n  \"category\": \"café\",\n  \"method\": \"v60\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/inventory/product-id-here",
+              "host": ["{{base_url}}"],
+              "path": ["api", "inventory", "product-id-here"]
+            },
+            "description": "Actualiza un producto existente del inventario. Reemplaza 'product-id-here' con el ID real del producto."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/product-id-here",
+              "host": ["{{base_url}}"],
+              "path": ["api", "inventory", "product-id-here"]
+            },
+            "description": "Elimina un producto del inventario. Reemplaza 'product-id-here' con el ID real del producto."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Payment",
+      "item": [
+        {
+          "name": "Create Checkout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/payment/create-checkout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "payment", "create-checkout"]
+            },
+            "description": "Crea una sesión de pago en Stripe. Retorna una URL de checkout para que el usuario complete el pago."
+          },
+          "response": []
+        },
+        {
+          "name": "Billing Portal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/payment/portal",
+              "host": ["{{base_url}}"],
+              "path": ["api", "payment", "portal"]
+            },
+            "description": "Abre el portal de facturación de Stripe. Permite al usuario gestionar suscripciones y datos de pago."
+          },
+          "response": []
+        },
+        {
+          "name": "Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/payment/webhook",
+              "host": ["{{base_url}}"],
+              "path": ["api", "payment", "webhook"]
+            },
+            "description": "Webhook de Stripe. Llamado automáticamente por Stripe en eventos de pago. No requiere autenticación."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Verifica que el servidor está activo y funcionando. Retorna { ok: true }."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
