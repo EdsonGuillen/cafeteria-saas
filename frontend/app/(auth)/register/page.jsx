@@ -45,7 +45,7 @@ export default function RegisterPage() {
           <div key={name}>
             <label className="block text-sm font-medium text-gray-600 mb-1">{label}</label>
             {name === 'slug' && (
-              <p className="text-xs text-gray-400 mb-1">Tu página será: localhost:3000/cafe/<strong>{form.slug || 'tu-nombre'}</strong></p>
+              <p className="text-xs text-gray-400 mb-1">Tu página será: {window.location.origin}/cafe//<strong>{form.slug || 'tu-nombre'}</strong></p>
             )}
             <input
               name={name} type={type} value={form[name]} placeholder={placeholder}

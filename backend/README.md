@@ -57,7 +57,7 @@ backend/
 │   │   ├── cafeteria.routes.js
 │   │   ├── inventory.routes.js
 │   │   └── payment.routes.js
-│   └── routers/                   # (Vacío - no se usa actualmente)
+│   └── routers/                   # (no se usa actualmente)
 ├── prisma/
 │   ├── schema.prisma              # Modelos de BD (User, Cafeteria, Inventory)
 │   └── migrations/                # (Se crea con npx prisma migrate)
